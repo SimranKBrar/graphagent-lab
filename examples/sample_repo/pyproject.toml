@@ -1,0 +1,5 @@
+[project]
+name = "orders-service"
+version = "1.0.0"
+description = "Order management service (GraphAgent Lab benchmark subject)"
+requires-python = ">=3.10"
