@@ -449,15 +449,20 @@ export default function Dashboard() {
                                   ? 'bad-num'
                                   : 'muted';
                           return (
-                            <td key={s} className="run-sys">
-                              <span className={`mono small ${compCls}`}>{comp ?? 'pending'}</span>
-                              <span className="muted small">
-                                {num(m.tests_passed) ?? 0}✓/{num(m.tests_failed) ?? 0}✗ ·{' '}
-                                {fmtNum(num(m.tokens) ?? 0)} tok
-                              </span>
-                              <span className="muted small">
-                                {fmtCost(num(m.cost_usd) ?? 0)} · {fmtDuration(num(m.duration_ms) ?? 0)}
-                              </span>
+                            <td key={s}>
+                              {/* flex must live on a div, not the td — display:flex
+                                  on a td breaks table-cell layout and stacks the
+                                  three system columns on top of each other */}
+                              <div className="run-sys">
+                                <span className={`mono small ${compCls}`}>{comp ?? 'pending'}</span>
+                                <span className="muted small">
+                                  {num(m.tests_passed) ?? 0}✓/{num(m.tests_failed) ?? 0}✗ ·{' '}
+                                  {fmtNum(num(m.tokens) ?? 0)} tok
+                                </span>
+                                <span className="muted small">
+                                  {fmtCost(num(m.cost_usd) ?? 0)} · {fmtDuration(num(m.duration_ms) ?? 0)}
+                                </span>
+                              </div>
                             </td>
                           );
                         })}

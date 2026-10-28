@@ -173,6 +173,12 @@ export interface PlanStep {
   symbols?: string[];
 }
 
+// The API returns the plan as `{steps: [...]}` (see docs/API.md), not a bare
+// array — `SystemRun.plan` and `SystemDetail.plan` both use this shape.
+export interface PlanDoc {
+  steps: PlanStep[];
+}
+
 export interface TestFailure {
   name: string;
   error: string;
@@ -201,7 +207,7 @@ export interface SystemRun {
   finished_at: string | null;
   error: string | null;
   metrics: RunMetrics | null;
-  plan: PlanStep[] | null;
+  plan: PlanDoc | null;
   test_report: TestReport | null;
 }
 
@@ -269,7 +275,7 @@ export interface SystemDetail {
   stage: Stage | null;
   metrics: RunMetrics | null;
   explore_report: ExploreReport | null;
-  plan: PlanStep[] | null;
+  plan: PlanDoc | null;
   edits: EditRecord[];
   test_report: TestReport | null;
   repairs: Repair[];

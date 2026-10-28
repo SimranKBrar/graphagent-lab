@@ -52,14 +52,26 @@ class ExecResult:
         return "\n".join(parts)
 
 
+# Cached daemon probe: a hung docker CLI must not stall request handlers
+# (e.g. /api/health, which previously ran `docker info` twice per call).
+_DOCKER_PROBE: Optional[tuple[float, bool]] = None  # (monotonic ts, result)
+_DOCKER_PROBE_TTL = 30.0
+
+
 def docker_daemon_up() -> bool:
+    global _DOCKER_PROBE
     if shutil.which("docker") is None:
         return False
+    now = time.monotonic()
+    if _DOCKER_PROBE is not None and now - _DOCKER_PROBE[0] < _DOCKER_PROBE_TTL:
+        return _DOCKER_PROBE[1]
     try:
-        proc = subprocess.run(["docker", "info"], capture_output=True, timeout=20)
-        return proc.returncode == 0
+        proc = subprocess.run(["docker", "info"], capture_output=True, timeout=5)
+        ok = proc.returncode == 0
     except (subprocess.TimeoutExpired, OSError):
-        return False
+        ok = False
+    _DOCKER_PROBE = (now, ok)
+    return ok
 
 
 def ensure_image() -> bool:

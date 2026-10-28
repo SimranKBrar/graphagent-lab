@@ -506,11 +506,11 @@ function DetailModal({
 
           <section className="detail-section">
             <h3>Plan</h3>
-            {!detail.plan || detail.plan.length === 0 ? (
+            {!detail.plan?.steps?.length ? (
               <p className="muted small">No plan generated.</p>
             ) : (
               <ol className="plan-steps">
-                {detail.plan.map((s, i) => (
+                {detail.plan.steps.map((s, i) => (
                   <li key={String(s.id ?? i)}>
                     <div className="plan-desc">{s.description}</div>
                     {!!s.files?.length && <div className="plan-files mono small">{s.files.join(', ')}</div>}
